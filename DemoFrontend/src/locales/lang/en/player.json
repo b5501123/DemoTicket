@@ -1,0 +1,18 @@
+{
+  "cancel": "Cancel",
+  "create": "Create",
+  "email": "Email",
+  "error": {
+    "emailFormatError": "Email format error."
+  },
+  "firstName": "First name",
+  "freeCredit": "Free Credit",
+  "lastName": "Last name",
+  "nickName": "Nick name",
+  "rakebackPct": "Rake back percentage",
+  "referCode": "Refer code",
+  "submit": "Submit",
+  "success1": "Success to create account {acc}",
+  "success2": "Success to update player info",
+  "triCredit": "Tri Credit"
+}

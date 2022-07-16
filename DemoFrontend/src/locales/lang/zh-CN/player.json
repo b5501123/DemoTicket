@@ -1,0 +1,13 @@
+{
+  "firstName": "First name",
+  "lastName": "Last name",
+  "nickName": "Nick name",
+  "email": "Email",
+  "referCode": "Refer code",
+  "triCredit": "Tri Credit",
+  "freeCredit": "Free Credit",
+  "rakebackPct": "Rake back percentage",
+  "submit": "Submit",
+  "cancel": "Cancel",
+  "success1": "Success to create account {acc}"
+}

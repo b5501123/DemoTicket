@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Common.Options;
+using System.ComponentModel;
 using System.Reflection;
 
 namespace Common.Extensions
@@ -21,6 +22,16 @@ namespace Common.Extensions
 
             if (attributes.Length > 0) return attributes[0].Description;
             else return source.ToString();
+        }
+
+        public static List<SelectOption> GetOption<T>()
+           where T : System.Enum
+        {
+            return System.Enum.GetValues(typeof(T)).Cast<T>().Select(x => new SelectOption
+            {
+                Name = x.GetDescription(),
+                Value = x.GetHashCode(),
+            }).ToList();
         }
     }
 }

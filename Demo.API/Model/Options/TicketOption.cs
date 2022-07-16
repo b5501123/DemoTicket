@@ -9,5 +9,9 @@ namespace Model.Options
         public List<SeverityEnum> Severities { get; set; }
 
         public bool? IsResolved { get; set; }
+
+        public DateTime? StartTime { get; set; }
+
+        public DateTime? EndTime { get; set; }
     }
 }

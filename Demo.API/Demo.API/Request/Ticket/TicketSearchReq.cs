@@ -14,6 +14,10 @@ namespace Demo.API.Request
 
         public bool? IsResolved { get; set; }
 
+        public DateTime? StartTime { get; set; }
+
+        public DateTime? EndTime { get; set; }
+
         public TicketOption BuildTicketOption()
         {
             return new TicketOption
@@ -21,6 +25,8 @@ namespace Demo.API.Request
                 Types = this.Types.ToListByCutString<TicketTypeEnum>(),
                 Severities = this.Severities.ToListByCutString<SeverityEnum>(),
                 IsResolved = this.IsResolved,
+                StartTime = this.StartTime,
+                EndTime = this.EndTime,
             };
         }
     }

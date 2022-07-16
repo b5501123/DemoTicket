@@ -39,6 +39,16 @@ namespace Repository.Repositories
                 query = query.Where(r => r.IsResolved == option.IsResolved);
             }
 
+            if (option.StartTime != null)
+            {
+                query = query.Where(r => r.CreateTime >= option.StartTime);
+            }
+
+            if (option.EndTime != null)
+            {
+                query = query.Where(r => r.CreateTime <= option.EndTime);
+            }
+
             pagination.Total = await query.CountAsync();
 
             return await query.DoPaging(pagination).ToListAsync();
@@ -80,7 +90,6 @@ namespace Repository.Repositories
             return await _writeDB.Ticket.Where(r => r.TicketID == tickedID && !r.IsDel).UpdateFromQueryAsync(r => new TicketModel
             {
                 IsDel = true,
-                ResolvedTime = DateTime.Now,
             });
         }
     }
