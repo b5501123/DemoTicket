@@ -1,45 +1,45 @@
 <template>
-  Date:
-  <a-range-picker
-    v-model:value="timeInterval"
-    format="YYYY-MM-DD HH:mm:ss"
-    :showTime="{ format: 'HH:mm:ss' }"
-    :ranges="ranges"
-  />
-  Severity:
-  <a-select
-    v-model:value="severityIDs"
-    mode="multiple"
-    show-search
-    placeholder="Severity"
-    style="width: 200px"
-    :options="severityOption"
-    allowClear
-    @select="severitySelectChange"
-  />
-  TicketType:
-  <a-select
-    v-model:value="ticketTypeIDs"
-    mode="multiple"
-    show-search
-    placeholder="TicketType"
-    style="width: 200px"
-    :options="ticketTypeOption"
-    allowClear
-    @select="ticketTypeSelectChange"
-  />
-  <a-button type="primary" @click="onSearch"> Search </a-button>
-
-  <Drawer
-    :severityCreateOption="severityCreateOption"
-    :ticketTypeCreateOption="ticketTypeCreateOption"
-    :submitApi="onCreate"
-  >
-    <template #btn>
-      <a-button type="primary" style="float: right"> <PlusOutlined /> New Setting </a-button>
-    </template>
-  </Drawer>
   <div>
+    Date:
+    <a-range-picker
+      v-model:value="timeInterval"
+      format="YYYY-MM-DD HH:mm:ss"
+      :showTime="{ format: 'HH:mm:ss' }"
+      :ranges="ranges"
+    />
+    Severity:
+    <a-select
+      v-model:value="severityIDs"
+      mode="multiple"
+      show-search
+      placeholder="Severity"
+      style="width: 200px"
+      :options="severityOption"
+      allowClear
+      @select="severitySelectChange"
+    />
+    TicketType:
+    <a-select
+      v-model:value="ticketTypeIDs"
+      mode="multiple"
+      show-search
+      placeholder="TicketType"
+      style="width: 200px"
+      :options="ticketTypeOption"
+      allowClear
+      @select="ticketTypeSelectChange"
+    />
+    <a-button type="primary" @click="onSearch"> Search </a-button>
+
+    <Drawer
+      :severityCreateOption="severityCreateOption"
+      :ticketTypeCreateOption="ticketTypeCreateOption"
+      :submitApi="onCreate"
+    >
+      <template #btn>
+        <a-button type="primary" style="float: right"> <PlusOutlined /> New Setting </a-button>
+      </template>
+    </Drawer>
     <a-table
       :columns="columns"
       :data-source="dataSource"
@@ -49,7 +49,7 @@
       :scroll="{ x: true }"
       ><template #action="{ record }">
         <a-button
-          v-if="!record.isResolved"
+          v-if="!record.isResolved && isResolve(record.type)"
           type="primary"
           shape="circle"
           @click="onResolve(record.ticketID)"
@@ -58,12 +58,12 @@
         </a-button>
         <Drawer
           :severityCreateOption="severityCreateOption"
-          :ticketTypeCreateOption="ticketTypeCreateOption"
+          :ticketTypeCreateOption="ticketTypeUpdateOption"
           :submitApi="onUpdate"
           :data="record"
         >
           <template #btn>
-            <a-button type="primary" shape="circle">
+            <a-button v-if="isCreate(record.type)" type="primary" shape="circle">
               <EditOutlined />
             </a-button>
           </template>
@@ -85,6 +85,7 @@
   import { useFetchDataList } from '/@/hooks/api/useFetchData';
   import { SelectTypes } from 'ant-design-vue/lib/select';
   import { OptionEnum } from '/@/enums/optionEnum';
+  import { RoleEnum, TicketTypeEnum } from '/@/enums/ticketEnum';
   import * as ticketApi from '/@/api/ticket/ticket';
   import { Ticket } from '/@/api/ticket/model/ticketModel';
   import { CheckOutlined, PlusOutlined, DeleteFilled, EditOutlined } from '@ant-design/icons-vue';
@@ -113,7 +114,6 @@
     setup() {
       const { t } = useI18n('routes');
       const roleName = useUserStore().getUserInfo.roleName;
-      console.log(roleName);
       const ranges = {
         'Past 30 Days': [moment().subtract(30, 'days').startOf('days'), moment().endOf('days')],
         'Past 7 Days': [moment().subtract(7, 'days').startOf('days'), moment().endOf('days')],
@@ -130,6 +130,7 @@
 
       const severityCreateOption = ref([]);
       const ticketTypeCreateOption = ref([]);
+      const ticketTypeUpdateOption = ref([]);
 
       const timeInterval = ref<Moment[]>([
         moment().subtract(30, 'days').startOf('days'),
@@ -195,12 +196,24 @@
         }
       };
 
+      const isCreate = (type: number) => {
+        if (type == TicketTypeEnum.Bug || type == TicketTypeEnum.TestCase) {
+          return roleName == RoleEnum.QA;
+        } else if (type == TicketTypeEnum.FeatureRequest) {
+          return roleName == RoleEnum.PM;
+        }
+
+        return true;
+      };
+
       const ticketTypeOption = computed<SelectTypes['options']>(() => {
         let result = Object.keys(ticketTypeinfo.value).map((info) => ({
           value: Number(info),
           label: ticketTypeinfo.value[info],
         }));
-        ticketTypeCreateOption.value = result.map((r) => r);
+        ticketTypeCreateOption.value = result.filter((r) => isCreate(r.value)).map((r) => r);
+
+        ticketTypeUpdateOption.value = result.map((r) => r);
         result.unshift({ value: 0, label: 'All' });
         return result;
       });
@@ -232,6 +245,16 @@
           message.success('Resolve Ticket success');
           onEffect();
         });
+      };
+
+      const isResolve = (type: number) => {
+        if (type == TicketTypeEnum.Bug || type == TicketTypeEnum.FeatureRequest) {
+          return roleName == RoleEnum.RD;
+        } else if (type == TicketTypeEnum.TestCase) {
+          return roleName == RoleEnum.QA;
+        }
+
+        return true;
       };
 
       const columns = [
@@ -320,11 +343,14 @@
         ranges,
         severityCreateOption,
         ticketTypeCreateOption,
+        ticketTypeUpdateOption,
         onSearch,
         onCreate,
         onUpdate,
         onDelete,
         onResolve,
+        isResolve,
+        isCreate,
       };
     },
   });
