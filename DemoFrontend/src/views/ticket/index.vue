@@ -88,6 +88,7 @@
   import * as ticketApi from '/@/api/ticket/ticket';
   import { Ticket } from '/@/api/ticket/model/ticketModel';
   import { CheckOutlined, PlusOutlined, DeleteFilled, EditOutlined } from '@ant-design/icons-vue';
+  import { useUserStore } from '/@/store/modules/user';
   import Drawer from './Drawer.vue';
   const dataListToMapFn = (dataList: any) => {
     const convertedData = {};
@@ -111,6 +112,8 @@
     },
     setup() {
       const { t } = useI18n('routes');
+      const roleName = useUserStore().getUserInfo.roleName;
+      console.log(roleName);
       const ranges = {
         'Past 30 Days': [moment().subtract(30, 'days').startOf('days'), moment().endOf('days')],
         'Past 7 Days': [moment().subtract(7, 'days').startOf('days'), moment().endOf('days')],
@@ -136,9 +139,7 @@
       const severityIDs = ref([0]);
       const ticketTypeIDs = ref([0]);
 
-      const { loading, dataSource, pagination, fetchParams, onEffect } = useFetchDataList(
-        ticketApi.getList,
-      );
+      const { loading, dataSource, fetchParams, onEffect } = useFetchDataList(ticketApi.getList);
 
       const onSearch = () => {
         let severity = severityIDs.value.includes(0) ? undefined : severityIDs.value.join(',');
@@ -205,7 +206,6 @@
       });
 
       getOptions();
-
       const onCreate = (data: Ticket) => {
         return ticketApi.create(data).then(() => {
           message.success('Create Ticket success');

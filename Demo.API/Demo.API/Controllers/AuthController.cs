@@ -49,7 +49,7 @@ namespace Demo.API.Controllers
         [HttpGet]
         public async Task<ApiResponse<UserInfoRes>> GetUserInfo()
         {
-            return ApiResponse<UserInfoRes>.Ok(new UserInfoRes { UserId = _userInfo.UserID, NickName = _userInfo.Name });
+            return ApiResponse<UserInfoRes>.Ok(new UserInfoRes { UserId = _userInfo.UserID, NickName = _userInfo.Name, RoleName = _userInfo.Role.ToString() });
         }
 
         private string GetToken(UserModel user)

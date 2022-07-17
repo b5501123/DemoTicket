@@ -40,6 +40,7 @@ export function getUserInfo() {
         userId: data.userId,
         username: data.nickName,
         realName: data.nickName,
+        roleName: data.roleName,
         avatar:
           'https://lh3.googleusercontent.com/ixUl8GNk3MnqFt8BC_OLv2Vh1GTPNd2W2rFyjOUkYpyMztgppduyv_065_mtDIHxVv06k0O9ZTF8QTu6aPh8wnbKspuvyQWxa4Alag',
         roles: [

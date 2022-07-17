@@ -24,6 +24,7 @@ export interface LoginResultData {
   jwtToken: string;
   account: string;
   role: RoleInfo;
+  roleName: string;
 }
 
 /**
