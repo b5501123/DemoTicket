@@ -17,13 +17,16 @@ B. Phase II Requirement:
 
 建置順序:
 後端:
-TDemo\DemoTicket\Demo.API\SQL\DemoDataSeed.sql -> 建立DB Schema
-設定appsetting，連線字串及JWT設定
+1. TDemo\DemoTicket\Demo.API\SQL\DemoDataSeed.sql -> 建立DB Schema
+2. 設定appsetting，連線字串及JWT設定
 
 前端:
-1.設定.env.development 的VITE_GLOB_API_URL api 路由
-2.npm install all
-3.npm run dev
+1. 設定.env.development 的VITE_GLOB_API_URL api 路由
+2. npm install all
+3. npm run dev
+
+
+畫面展示:
 
 ![Swag](https://user-images.githubusercontent.com/57789269/179384716-8cfe1eb5-7895-4216-bcd4-1db0e8d3f728.png)
 
